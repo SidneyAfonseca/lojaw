@@ -9,3 +9,36 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Produto {
+  id        String   @id @default(uuid()) @db.Char(40)
+  nome      String   @unique @db.VarChar(100)
+  preco     Decimal  @db.Decimal
+  estoque   Int      @db.Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("produtos")
+}
+
+model Usuario {
+  id        String   @id @default(uuid()) @db.Char(40)
+  nome      String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(50)
+  senha     String   @db.VarChar(80)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  tipoUsuarioId String @unique
+  tipoUsuario TipoUsuario @relation(fields: [tipoUsuarioId], references: [id])
+ 
+  @@map("usuarios")
+}
+
+model TipoUsuario {
+  id        String   @id @default(uuid()) @db.Char(40)
+  rotulo     String   @db.VarChar(45)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  usuario Usuario ?
+  @@map("tipousuarios")
+}
